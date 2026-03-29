@@ -1,0 +1,237 @@
+/* ==================
+   CORE VARIABLES & RESET
+   ================== */
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+:root {
+    --grey-paper: #D3D3D3;
+    --pure-black: #111111;
+    --print-red: #E61515; 
+}
+
+/* DESTRUCTIVE INTERACTIVE CURSOR */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: none !important; 
+}
+
+#cursor-crosshair {
+    position: fixed;
+    width: 30px; height: 30px;
+    border: 2px solid var(--print-red);
+    border-radius: 50%;
+    top: 0; left: 0;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 999999;
+    mix-blend-mode: difference;
+    transition: width 0.1s, height 0.1s;
+}
+#cursor-crosshair::before, #cursor-crosshair::after { content: ''; position: absolute; background: var(--print-red); }
+#cursor-crosshair::before { width: 100%; height: 2px; top: 50%; left: 0; transform: translateY(-50%); }
+#cursor-crosshair::after { width: 2px; height: 100%; top: 0; left: 50%; transform: translateX(-50%); }
+
+.ink-stamp {
+    position: absolute; font-family: 'Anton', sans-serif; font-size: 8vw; color: var(--pure-black); pointer-events: none; z-index: 50; opacity: 0.85; mix-blend-mode: color-burn; transform-origin: center;
+}
+
+body {
+    background-color: var(--grey-paper); color: var(--pure-black); font-family: 'Space Mono', monospace; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+}
+
+/* ==================
+   GLOBAL POSTER ELEMENTS
+   ================== */
+.noise-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; opacity: 0.15;
+    background: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+    mix-blend-mode: multiply;
+}
+
+.bw-print { filter: grayscale(100%) contrast(1.8) brightness(0.9); mix-blend-mode: multiply; object-fit: cover; }
+
+/* THE PAPER TEAR OVERLAY */
+.paper-tear-overlay {
+    position: fixed;
+    top: -130vh; /* Hidden way up */
+    left: 0;
+    width: 100vw;
+    height: 120vh; /* Overkill to cover screen and allow jagged top/bottom */
+    background: var(--pure-black); /* Thick black sheet */
+    z-index: 100000; /* Below cursor, above everything */
+    pointer-events: none;
+    clip-path: polygon(
+        0% 0%, 5% 4%, 10% 1%, 15% 5%, 20% 0%, 25% 6%, 30% 2%, 35% 5%, 40% 1%, 45% 6%, 50% 0%, 
+        55% 5%, 60% 2%, 65% 7%, 70% 1%, 75% 6%, 80% 2%, 85% 5%, 90% 0%, 95% 4%, 100% 1%, 
+        100% 98%, 95% 94%, 90% 99%, 85% 95%, 80% 100%, 75% 96%, 70% 99%, 65% 94%, 60% 100%, 
+        55% 96%, 50% 99%, 45% 95%, 40% 100%, 35% 96%, 30% 99%, 25% 94%, 20% 100%, 15% 95%, 
+        10% 99%, 5% 94%, 0% 100%
+    );
+}
+
+/* HEADER */
+.poster-header {
+    position: fixed; top: 0; left: 0; width: 100%; padding: 30px 40px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; mix-blend-mode: difference;
+}
+.logo-box { font-size: 2.5rem; font-family: 'Anton', sans-serif; color: #FFF; letter-spacing: 2px;}
+.nav-links a { font-weight: bold; font-size: 1.2rem; margin-left: 30px; text-decoration: none; color: #FFF; }
+
+.poster-section { position: relative; width: 100vw; min-height: 100vh; overflow: hidden; }
+.section-grey { background-color: var(--grey-paper); color: var(--pure-black); border-bottom: 5px solid var(--pure-black); }
+.section-red { background-color: var(--print-red); color: var(--pure-black); border-bottom: 5px solid var(--pure-black); }
+
+/* ==================
+   S1: HONG KONG / BRUTAL ISME (HERO)
+   ================== */
+.s1-brutal { display: flex; align-items: center; justify-content: center; padding-top: 10vh; }
+.giant-red-text { position: absolute; font-family: 'Anton', sans-serif; color: var(--print-red); font-size: 25vw; line-height: 0.8; z-index: 10; pointer-events: none; }
+.s1-brutal .tbg-1 { top: 10%; left: -2%; }
+.s1-brutal .tbg-2 { top: 55%; right: -2%; z-index: 2; }
+.main-image-wrapper { position: relative; width: 45vw; z-index: 5; }
+.building-img { width: 100%; height: auto; display: block; }
+.red-vector-lines { position: absolute; top: -15%; left: -10%; width: 140%; height: 120%; pointer-events: none; z-index: 15; }
+.dense-text-block { position: absolute; font-size: 1rem; font-weight: bold; line-height: 1.3; max-width: 250px; text-transform: uppercase; color: var(--pure-black); z-index:15; }
+.text-blk-1 { bottom: 15%; left: 8%; }
+.text-blk-2 { bottom: 10%; right: 10%; text-align: right; max-width: 200px; }
+.red-bar { width: 100%; height: 6px; background: var(--print-red); margin-top: 8px; }
+
+/* ==================
+   S2: POST PUNK
+   ================== */
+.s2-postpunk { min-height: 130vh; }
+.stretch-typo { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scaleY(2.2); display: flex; gap: 8vw; font-family: 'Anton', sans-serif; font-size: 22vw; line-height: 0.8; color: var(--pure-black); mix-blend-mode: overlay; z-index: 2; opacity: 0.8; }
+.punk-img { position: absolute; top: 15%; left: 35%; width: 40vw; height: 70vh; object-fit: cover; z-index: 5; }
+.punk-text-columns { position: absolute; bottom: 8vh; left: 5vw; width: 90vw; display: flex; gap: 50px; z-index: 10; }
+.punk-p { flex: 1; font-size: 0.85rem; line-height: 1.3; text-transform: uppercase; text-align: justify; font-weight: bold; }
+.red-highlight { background: var(--print-red); color: var(--pure-black); padding: 0 5px; }
+.red-txt { color: var(--print-red); }
+
+/* ==================
+   S3: GRUNGE
+   ================== */
+.s3-grunge { min-height: 150vh; }
+.grunge-title { position: absolute; top: 0; left: -12%; font-family: 'Anton', sans-serif; font-size: 40vw; color: var(--pure-black); letter-spacing: -2vw; writing-mode: vertical-lr; transform: rotate(180deg); mix-blend-mode: color-burn; opacity: 0.7; z-index: 1; }
+.grunge-title-2 { position: absolute; bottom: -5%; right: -2%; font-family: 'Anton', sans-serif; color: var(--pure-black); font-size: 28vw; line-height: 0.8; z-index: 1; }
+.grunge-cutout { position: absolute; top: 5%; left: 25%; width: 65vw; height: 120vh; object-position: center top; z-index: 5; }
+.fake-logo { position: absolute; bottom: 25%; right: 15%; font-size: 15vw; font-family: 'Anton', sans-serif; color: var(--pure-black); z-index: 10; }
+.grunge-small-block { position: absolute; bottom: 5%; right: 5vw; width: 400px; font-size: 0.75rem; font-family: 'Space Mono', monospace; font-weight: bold; text-align: justify; text-transform: uppercase; line-height: 1.1; z-index: 10; }
+
+/* ==================
+   S4: CCTV SECURITY SHOP
+   ================== */
+.s4-cctv { background-color: #050505; padding: 15vh 5vw; border-bottom: 5px solid var(--print-red); }
+.cctv-header { font-family: 'Space Mono', monospace; font-size: 5vw; color: var(--grey-paper); text-align: center; letter-spacing: 5px; margin-bottom: 10vh; text-shadow: 2px 2px 0px var(--print-red); position: relative; z-index: 10; }
+.cctv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5vw; width: 85vw; margin: 0 auto; background: var(--pure-black); padding: 1vw; border: 4px solid #333; position: relative; z-index: 10; }
+.cctv-monitor { position: relative; background: #1a1a1a; aspect-ratio: 4/3; overflow: hidden; border: 3px solid #000; }
+.cctv-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.8) brightness(0.7) sepia(100%) hue-rotate(80deg) saturate(3); }
+.cctv-overlay { position: absolute; top:0;left:0;width:100%;height:100%; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2) 1px, transparent 1px, transparent 2px); pointer-events: none; z-index: 4; }
+.cctv-scanline { position: absolute; width: 100%; height: 8px; background: rgba(255,255,255,0.1); top: 0; left: 0; animation: scan 3.5s linear infinite; z-index: 5; pointer-events: none; }
+@keyframes scan { 0% { top: -10%; } 100% { top: 110%; } }
+.cctv-ui { position: absolute; color: #00FF41; font-family: 'Space Mono', monospace; font-size: 1rem; font-weight: bold; z-index: 10; text-shadow: 0px 0px 4px #00FF41; }
+.top-left { top: 15px; left: 15px; }
+.top-right { top: 15px; right: 15px; }
+.btm-left { bottom: 15px; left: 15px; }
+.btm-right { bottom: 15px; right: 15px; }
+.rec-dot { display: inline-block; width: 12px; height: 12px; background: red; border-radius: 50%; box-shadow: 0px 0px 8px red; animation: blink 1s infinite; vertical-align: middle; margin-right: 5px; }
+@keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+.cctv-price { font-family: 'Anton', sans-serif; color: var(--print-red); text-shadow: 0px 0px 4px var(--print-red); font-size: 2rem; }
+
+/* ==================
+   S5: GRAFFITI WALL & SNEAKERS
+   ================== */
+.s5-sneakerwall { position: relative; width: 100vw; height: 120vh; display: flex; justify-content: center; align-items: center; }
+.bg-graffiti { position: absolute; width: 100vw; height: 100vh; object-fit: cover; opacity: 0.5; mix-blend-mode: multiply; }
+.graffiti-title { position: absolute; top: 5vh; left: 5vw; font-size: 15vw; line-height: 0.8; z-index: 5; opacity: 0.9; }
+.sneaker-wrap { position: relative; z-index: 10; width: 50vw; }
+.sneaker-img { width: 100%; height: auto; filter: drop-shadow(20px 20px 0px var(--print-red)) drop-shadow(-10px -10px 0px var(--pure-black)) grayscale(100%) contrast(1.5); mix-blend-mode: multiply; }
+.graffiti-price { position: absolute; bottom: -40px; right: -50px; font-size: 8rem; font-family: 'Anton', sans-serif; color: var(--print-red); transform: rotate(25deg); text-shadow: 6px 6px 0px var(--pure-black); z-index: 15; }
+.text-blk-3 { bottom: 10vh; right: 5vw; font-size: 1.5rem; max-width: 400px; background: var(--pure-black); color: var(--grey-paper); padding: 20px; border: 4px solid var(--print-red); }
+
+/* ==================
+   S6: THE MOSAIC EXPLOSION
+   ================== */
+.s6-mosaic { min-height: 160vh; display: flex; justify-content: center; align-items: center; }
+.mosaic-bg-title { position: absolute; font-family: 'Anton', sans-serif; font-size: 35vw; color: var(--pure-black); mix-blend-mode: overlay; z-index: 1; pointer-events:none; }
+.mosaic-wrapper { position: relative; width: 80vw; height: 100vh; z-index: 5; }
+.mos-img { position: absolute; box-shadow: 15px 15px 0px var(--print-red); }
+.m1 { width: 35vw; top: 10%; left: 5%; z-index: 4; transform: rotate(-5deg); filter: grayscale(100%) contrast(2); }
+.m2 { width: 30vw; top: 40%; right: 5%; z-index: 6; transform: rotate(12deg); filter: grayscale(100%) contrast(1.5); }
+.m3 { width: 40vw; bottom: 5%; left: 20%; z-index: 3; transform: rotate(5deg); mix-blend-mode: multiply; }
+.m4 { width: 25vw; top: 20%; right: 25%; z-index: 5; transform: rotate(-15deg); }
+.m-box-1 { position: absolute; top: -5%; right: 15%; width: 5vw; height: 5vw; background: var(--print-red); z-index: 7; }
+.m-box-2 { position: absolute; bottom: 15%; left: 5%; width: 15vw; height: 4vh; background: var(--pure-black); z-index: 8; }
+.text-blk-4 { top: 40vh; left: 5vw; font-size: 2rem; z-index: 10; color: var(--print-red); text-shadow: 4px 4px 0px var(--pure-black); }
+
+/* ==================
+   S7: TERMINAL MARQUEE MADNESS
+   ================== */
+.s7-marquee { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: space-evenly; }
+.huge-marquees { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: space-around; transform: rotate(-5deg) scale(1.2); }
+.h-marquee-track { display: flex; white-space: nowrap; width: max-content; }
+.hm-item { font-family: 'Anton', sans-serif; font-size: 15vw; color: var(--pure-black); line-height: 0.9; padding-right: 20px; }
+.terminal-warning { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--pure-black); color: var(--print-red); font-family: 'Space Mono', monospace; font-size: 5rem; padding: 30px 60px; z-index: 10; box-shadow: 20px 20px 0px var(--grey-paper); font-weight: bold; text-align: center; }
+
+@media (max-width: 768px) {
+    /* CURSOR OFF ON MOBILE */
+    #cursor-crosshair { display: none; }
+
+    /* HEADER */
+    .poster-header { padding: 15px 5vw; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: transparent; border-bottom: none; }
+    .logo-box { font-size: 1.6rem; letter-spacing: 1px; }
+    .nav-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4vw; width: 100%; }
+    .nav-links a { margin-left: 0; font-size: 0.8rem; }
+
+    /* S1: BRUTAL */
+    .s1-brutal { flex-direction: column; padding: 15vh 0 5vh 0; justify-content: flex-start; }
+    .giant-red-text { font-size: 35vw; position: relative; display: block; text-align: center; }
+    .s1-brutal .tbg-1 { top: auto; left: auto; margin-bottom: -5vh; z-index: 1; }
+    .s1-brutal .tbg-2 { top: auto; right: auto; margin-top: -5vh; z-index: 10; }
+    .main-image-wrapper { width: 90vw; margin: 0 auto; z-index: 5; }
+    .text-blk-1 { position: relative; bottom: auto; left: auto; width: 90vw; max-width: 100%; margin: 5vh auto 2vh auto; background: var(--print-red); color: var(--pure-black); padding: 15px; }
+    .text-blk-2 { position: relative; bottom: auto; right: auto; width: 90vw; max-width: 100%; margin: 0 auto; background: var(--pure-black); color: var(--grey-paper); padding: 15px; text-align: left; }
+    .red-vector-lines { display: none; }
+
+    /* S2: POST PUNK */
+    .s2-postpunk { min-height: auto; padding: 10vh 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+    .stretch-typo { font-size: 28vw; transform: translate(-50%, -50%) scaleY(1.2); opacity: 0.15; z-index: 0; }
+    .punk-img { position: relative; top: auto; left: auto; width: 90vw; height: auto; margin-bottom: 5vh; z-index: 2; }
+    .punk-text-columns { position: relative; bottom: auto; left: auto; flex-direction: column; gap: 20px; width: 90vw; padding: 20px; background: var(--grey-paper); border: 3px solid var(--pure-black); z-index: 5; }
+    .punk-p { font-size: 0.85rem; }
+
+    /* S3: GRUNGE */
+    .s3-grunge { min-height: auto; padding: 10vh 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow: hidden; }
+    .grunge-title { left: -5%; font-size: 45vw; opacity: 0.2; }
+    .grunge-cutout { position: relative; top: auto; left: auto; width: 90vw; height: auto; margin-bottom: 5vh; z-index: 5; }
+    .grunge-title-2 { position: relative; bottom: auto; right: auto; font-size: 35vw; margin-bottom: 2vh; z-index: 5; line-height: 0.9;}
+    .fake-logo { position: relative; bottom: auto; right: auto; font-size: 25vw; margin-bottom: 2vh; }
+    .grunge-small-block { position: relative; bottom: auto; right: auto; width: 90vw; padding: 20px; background: var(--pure-black); color: var(--grey-paper); font-size: 0.85rem; text-align: left; z-index: 6; }
+
+    /* S4: CCTV */
+    .s4-cctv { padding: 10vh 5vw; }
+    .cctv-header { font-size: 8vw; margin-bottom: 5vh; }
+    .cctv-grid { grid-template-columns: 1fr; width: 90vw; gap: 5vh; }
+    .cctv-ui { font-size: 0.8rem; }
+    .cctv-price { font-size: 1.5rem; }
+
+    /* S5: SNEAKERS */
+    .s5-sneakerwall { min-height: auto; height: auto; padding: 10vh 0; flex-direction: column; justify-content: flex-start; }
+    .graffiti-title { position: relative; top: auto; left: auto; font-size: 30vw; margin-bottom: 5vh; z-index: 5; text-align: center; }
+    .sneaker-wrap { width: 90vw; margin: 0 auto 5vh auto; z-index: 10; display: flex; justify-content: center; position: relative; }
+    .graffiti-price { position: absolute; right: 0; bottom: -20px; font-size: 3.5rem; padding: 5px 15px; background: var(--print-red); color: var(--pure-black); text-shadow: none; border: 3px solid var(--pure-black); transform: rotate(-5deg); z-index: 20; }
+    .text-blk-3 { position: relative; bottom: auto; right: auto; width: 90vw; margin: 0 auto; font-size: 1.1rem; padding: 20px; }
+    .bg-graffiti { height: 100%; top: 0; left: 0; }
+
+    /* S6: MOSAIC */
+    .s6-mosaic { min-height: auto; padding: 10vh 0; flex-direction: column; justify-content: flex-start; }
+    .mosaic-bg-title { font-size: 30vw; top: 10vh; z-index: 1; }
+    .mosaic-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3vh; width: 90vw; height: auto; margin: 0 auto 5vh auto; z-index: 5; }
+    .mosaic-wrapper .mos-img { position: relative; top: auto !important; left: auto !important; right: auto !important; bottom: auto !important; width: 85vw !important; transform: none !important; box-shadow: 10px 10px 0px var(--print-red); }
+    .m-box-1, .m-box-2 { display: none; }
+    .text-blk-4 { position: relative; top: auto; left: auto; width: 90vw; margin: 0 auto; padding: 20px; font-size: 1.2rem; text-align: center; background: var(--pure-black); color: var(--print-red); border: 2px solid var(--print-red); text-shadow: none; z-index: 10; }
+
+    /* S7: MARQUEE */
+    .hm-item { font-size: 20vw; }
+    .terminal-warning { font-size: 1.8rem; padding: 20px; width: 90vw; box-shadow: 8px 8px 0px var(--grey-paper); }
+}

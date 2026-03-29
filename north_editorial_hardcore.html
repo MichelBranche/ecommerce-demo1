@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NØRTH | Brutal Editorial Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Narrow:wght@400;700&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #050505;
+      --charcoal: #141414;
+      --paper: #e7e4df;
+      --white: #f6f6f4;
+      --red: #ff2a2a;
+      --title: 'Anton', sans-serif;
+      --condensed: 'Archivo Narrow', sans-serif;
+      --body: 'Inter', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--body);
+      overflow-x: hidden;
+      cursor: crosshair;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    ::selection { background: var(--red); color: var(--white); }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: soft-light;
+      opacity: .22;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.12) 0 1px, transparent 1px),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,.08) 0 1px, transparent 1px),
+        radial-gradient(circle at 40% 70%, rgba(255,255,255,.08) 0 1px, transparent 1px),
+        radial-gradient(circle at 65% 80%, rgba(255,255,255,.1) 0 1px, transparent 1px);
+      background-size: 4px 4px, 5px 5px, 6px 6px, 7px 7px;
+    }
+    .site-lines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 80;
+      background:
+        linear-gradient(to right, transparent 27.9%, rgba(255,42,42,.7) 28%, transparent 28.1%),
+        linear-gradient(to bottom, transparent 31.9%, rgba(255,42,42,.45) 32%, transparent 32.1%);
+      mix-blend-mode: screen;
+      opacity: .65;
+    }
+    .cross, .cross-dark {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      pointer-events: none;
+      transform: rotate(12deg);
+    }
+    .cross::before, .cross::after, .cross-dark::before, .cross-dark::after {
+      content: "";
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .cross::before, .cross-dark::before { width: 100%; height: 2px; }
+    .cross::after, .cross-dark::after { width: 2px; height: 100%; }
+    .cross::before, .cross::after { background: var(--red); }
+    .cross-dark::before, .cross-dark::after { background: var(--black); }
+    .scribble {
+      position: absolute;
+      pointer-events: none;
+      font-family: cursive;
+      color: var(--red);
+      line-height: 1;
+      font-weight: 700;
+      opacity: .95;
+      user-select: none;
+    }
+    .eyebrow {
+      font-family: var(--condensed);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .micro {
+      font-family: var(--condensed);
+      font-size: .78rem;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .section { position: relative; }
+
+    .hero {
+      min-height: 100vh;
+      overflow: clip;
+      background:
+        radial-gradient(circle at 70% 30%, rgba(255,255,255,.08), transparent 35%),
+        linear-gradient(180deg, rgba(255,255,255,.025), transparent 24%),
+        var(--black);
+    }
+    .hero-stage { position: relative; width: 100%; min-height: 100vh; isolation: isolate; }
+    .hero-ghost {
+      position: absolute; left: -1vw; top: 2vh; font-family: var(--title);
+      font-size: 36vw; line-height: .8; color: transparent;
+      -webkit-text-stroke: 2px rgba(255,255,255,.065); z-index: 1; letter-spacing: -.04em;
+    }
+    .hero-title {
+      position: absolute; left: 1.8vw; bottom: 4vh; z-index: 6; font-family: var(--title);
+      font-size: 26vw; line-height: .74; letter-spacing: -.06em; text-transform: uppercase;
+      color: var(--white); mix-blend-mode: difference; text-shadow: 0 0 30px rgba(0,0,0,.15);
+    }
+    .hero-title span { display: block; }
+    .hero-title .split { transform: translateX(8vw); }
+    .hero-portrait-wrap {
+      position: absolute; right: 7vw; top: 8vh; width: min(42vw, 620px); height: 82vh;
+      z-index: 4; overflow: visible;
+    }
+    .hero-blur-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 50% 22%, rgba(255,255,255,.16), transparent 18%),
+        radial-gradient(circle at 50% 35%, rgba(255,255,255,.12), transparent 22%),
+        radial-gradient(circle at 22% 36%, rgba(255,255,255,.12), transparent 18%),
+        radial-gradient(circle at 78% 44%, rgba(255,255,255,.12), transparent 19%),
+        radial-gradient(circle at 16% 72%, rgba(255,255,255,.09), transparent 16%),
+        radial-gradient(circle at 86% 74%, rgba(255,255,255,.09), transparent 16%);
+      filter: blur(28px); opacity: .55; transform: scale(1.15);
+    }
+    .hero-portrait {
+      position: absolute; inset: 0;
+      clip-path: polygon(4% 0, 100% 2%, 95% 100%, 0 96%);
+      filter: grayscale(1) contrast(1.2) brightness(.82);
+      box-shadow: -20px 20px 0 rgba(255,42,42,.2);
+    }
+    .hero-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 18%; }
+    .hero-red-block {
+      position: absolute; left: 0; bottom: 26vh; width: 20vw; height: 3.3vh;
+      background: var(--red); z-index: 5;
+    }
+    .hero-meta-left {
+      position: absolute; top: 4vh; left: 4vw; z-index: 8;
+      border-left: 2px solid var(--red); padding-left: 12px;
+    }
+    .hero-meta-right { position: absolute; top: 4.5vh; right: 4vw; text-align: right; z-index: 8; }
+    .hero-copy {
+      position: absolute; left: 5vw; bottom: 30vh; width: 18rem; z-index: 8;
+      color: rgba(255,255,255,.8); mix-blend-mode: screen;
+    }
+    .hero-cta {
+      position: absolute; left: 35vw; bottom: 14vh; z-index: 10; display: inline-flex;
+      align-items: center; gap: .8rem; padding: 1rem 1.25rem; border: 1px solid rgba(255,255,255,.55);
+      font-family: var(--condensed); font-size: .9rem; font-weight: 700; letter-spacing: .18em;
+      text-transform: uppercase; background: rgba(0,0,0,.3); backdrop-filter: blur(5px);
+      transition: transform .25s ease, background .25s ease, border-color .25s ease;
+    }
+    .hero-cta:hover { transform: translate(6px, -6px); background: var(--red); border-color: var(--red); }
+    .hero-cta::after { content: "↗"; font-size: 1rem; }
+    .hero .cross-a { left: 8vw; top: 18vh; z-index: 9; }
+    .hero .cross-b { right: 22vw; bottom: 18vh; z-index: 9; }
+    .hero .scribble-a { left: 22vw; top: 14vh; font-size: 7rem; transform: rotate(-7deg); }
+    .hero .scribble-b { right: 14vw; top: 22vh; font-size: 5rem; transform: rotate(8deg); }
+    .hero-ring {
+      position: absolute; right: 15vw; top: 23vh; width: 13rem; height: 4.5rem;
+      border: 3px solid var(--red); border-radius: 50%; transform: rotate(12deg); z-index: 7;
+    }
+    .hero-vertical-label {
+      position: absolute; left: 1.2vw; bottom: 8vh; writing-mode: vertical-rl;
+      transform: rotate(180deg); z-index: 8; color: rgba(255,255,255,.72);
+    }
+
+    .manifesto {
+      background: var(--paper); color: var(--black); padding: 16vh 0 12vh; overflow: clip;
+    }
+    .manifesto-grid { position: relative; width: min(1400px, 94vw); margin: 0 auto; min-height: 105vh; }
+    .manifesto-bg-word {
+      position: absolute; left: -1vw; top: 0; font-family: var(--title);
+      font-size: 20vw; line-height: .82; color: var(--black); opacity: .07; z-index: 0; text-transform: uppercase;
+    }
+    .manifesto-title {
+      position: absolute; left: 2vw; top: 6vh; z-index: 6; font-family: var(--title);
+      font-size: 14vw; line-height: .82; letter-spacing: -.05em; text-transform: uppercase; max-width: 50vw;
+    }
+    .manifesto-title .outline {
+      display: block; color: transparent; -webkit-text-stroke: 2px var(--red); transform: translateX(9vw);
+    }
+    .manifesto-building {
+      position: absolute; right: 1vw; top: 9vh; width: min(44vw, 620px); height: 78vh;
+      z-index: 2; filter: grayscale(1) contrast(1.3) brightness(.83);
+      clip-path: polygon(25% 0, 100% 0, 100% 100%, 0 100%, 0 58%);
+    }
+    .manifesto-building img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .manifesto-building-outline {
+      position: absolute; right: 1vw; top: 9vh; width: min(44vw, 620px); height: 78vh;
+      z-index: 4; border: 3px solid var(--red);
+      clip-path: polygon(25% 0, 100% 0, 100% 100%, 0 100%, 0 58%); pointer-events: none;
+    }
+    .manifesto-paper-block {
+      position: absolute; left: 35vw; top: 45vh; width: 13vw; min-width: 170px; height: 38vh;
+      background: linear-gradient(180deg, #d3d1cc, #c6c3bd); clip-path: polygon(0 0, 100% 4%, 96% 100%, 2% 97%);
+      opacity: .9; z-index: 3; box-shadow: 0 0 0 1px rgba(0,0,0,.06);
+    }
+    .manifesto-copy-left, .manifesto-copy-right {
+      position: absolute; width: 16rem; z-index: 7; font-family: var(--condensed); font-size: 1.05rem;
+      line-height: 1.12; text-transform: uppercase; font-weight: 700;
+    }
+    .manifesto-copy-left { left: 3vw; bottom: 8vh; }
+    .manifesto-copy-right { right: 3vw; bottom: 9vh; text-align: left; }
+    .manifesto-copy-left strong, .manifesto-copy-right strong { color: var(--red); }
+    .manifesto-cut {
+      position: absolute; right: 10vw; top: 37vh; width: 8vw; min-width: 70px; height: 18vh;
+      background: var(--red); z-index: 5; opacity: .9;
+    }
+    .manifesto-diagonal {
+      position: absolute; left: 52vw; top: 66vh; width: 42vw; height: 3px;
+      background: var(--red); transform: rotate(-35deg); z-index: 5; transform-origin: left center;
+    }
+
+    .poster-grunge { background: var(--red); color: var(--black); min-height: 118vh; overflow: clip; }
+    .poster-grid {
+      position: relative; width: min(1500px, 95vw); margin: 0 auto; min-height: 118vh; padding: 8vh 0 10vh;
+    }
+    .poster-word {
+      position: absolute; inset: 4vh 0 auto 0; font-family: var(--title); font-size: 25vw;
+      line-height: .82; color: rgba(0,0,0,.92); text-transform: uppercase; text-align: center;
+      letter-spacing: -.04em; z-index: 1; pointer-events: none;
+    }
+    .poster-model {
+      position: relative; z-index: 4; width: min(46vw, 640px); margin: 14vh auto 0;
+      filter: grayscale(1) contrast(1.25) brightness(.88); mix-blend-mode: multiply;
+    }
+    .poster-model img { width: 100%; height: auto; object-fit: contain; }
+    .poster-left-copy, .poster-right-copy {
+      position: absolute; bottom: 8vh; width: min(18vw, 240px); z-index: 6;
+      font-family: var(--condensed); font-size: 1rem; line-height: 1.05; text-transform: uppercase; font-weight: 700;
+    }
+    .poster-left-copy { left: 2vw; }
+    .poster-right-copy { right: 2vw; text-align: right; }
+    .poster-logo {
+      position: absolute; right: 9vw; bottom: 30vh; z-index: 6; font-family: var(--title);
+      font-size: 10vw; line-height: .82; color: var(--black);
+    }
+    .poster-scratch {
+      position: absolute; inset: 0; z-index: 7; pointer-events: none; opacity: .3;
+      background:
+        linear-gradient(100deg, transparent 0 13%, rgba(255,255,255,.3) 13.05%, transparent 13.3%),
+        linear-gradient(80deg, transparent 0 60%, rgba(255,255,255,.25) 60.08%, transparent 60.4%),
+        linear-gradient(110deg, transparent 0 72%, rgba(255,255,255,.2) 72.03%, transparent 72.3%),
+        linear-gradient(0deg, rgba(255,255,255,.08), rgba(255,255,255,.08));
+      mix-blend-mode: screen;
+    }
+
+    .city { background: var(--paper); color: var(--black); min-height: 115vh; overflow: clip; }
+    .city-grid {
+      position: relative; width: min(1500px, 95vw); margin: 0 auto; min-height: 115vh; padding: 6vh 0 10vh;
+    }
+    .city-title {
+      position: absolute; top: 3vh; left: 34vw; font-family: var(--title); font-size: 11vw;
+      line-height: .86; text-transform: uppercase; color: var(--red); z-index: 7; letter-spacing: -.04em;
+    }
+    .city-left-vertical {
+      position: absolute; left: -1vw; top: 26vh; font-family: var(--title); font-size: 10vw; line-height: .8;
+      text-transform: uppercase; color: var(--red); transform: rotate(-90deg); transform-origin: top left;
+      z-index: 2; letter-spacing: -.05em;
+    }
+    .city-copy {
+      position: absolute; top: 28vh; left: 1vw; width: 22rem; color: var(--red); z-index: 7;
+      font-family: var(--body); font-size: 1.15rem; line-height: 1.35; font-weight: 800;
+    }
+    .city-swatches {
+      position: absolute; left: 0; top: 5vh; z-index: 8; display: flex; gap: .75rem;
+    }
+    .city-swatches span {
+      width: 38px; height: 38px; display: block; border: 2px solid rgba(0,0,0,.12);
+    }
+    .city-swatches span:nth-child(1) { background: var(--black); }
+    .city-swatches span:nth-child(2) { background: var(--paper); }
+    .city-swatches span:nth-child(3) { background: var(--red); }
+    .city-building {
+      position: absolute; right: 0; bottom: 6vh; width: min(58vw, 840px); height: 86vh; z-index: 4;
+      filter: grayscale(1) contrast(1.15) brightness(.88);
+      clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%, 0 44%);
+    }
+    .city-building img { width: 100%; height: 100%; object-fit: cover; }
+    .city-building-outline {
+      position: absolute; right: 0; bottom: 6vh; width: min(58vw, 840px); height: 86vh; z-index: 5;
+      border: 3px solid var(--red);
+      clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%, 0 44%); pointer-events: none;
+    }
+    .city-highlight {
+      position: absolute; right: 14vw; bottom: 31vh; width: 5vw; min-width: 52px; height: 24vh;
+      background: var(--red); z-index: 6; opacity: .92;
+    }
+    .city-paper {
+      position: absolute; left: 22vw; bottom: 15vh; width: 18vw; min-width: 160px; height: 38vh;
+      background: linear-gradient(180deg, #d7d5cf, #cac7c0); clip-path: polygon(10% 0, 100% 2%, 94% 100%, 0 95%);
+      z-index: 3;
+    }
+
+    .cutout { background: #7f0707; color: var(--white); min-height: 110vh; overflow: clip; }
+    .cutout-grid {
+      position: relative; width: min(1500px, 95vw); min-height: 110vh; margin: 0 auto; padding: 7vh 0;
+    }
+    .cutout-word {
+      position: absolute; inset: 12vh 0 auto 0; font-family: var(--title); font-size: 23vw; line-height: .8;
+      text-align: center; text-transform: uppercase; color: var(--white); z-index: 1; letter-spacing: -.05em;
+    }
+    .cutout-model { position: absolute; inset: 18vh auto 0 17vw; width: min(54vw, 760px); z-index: 5; }
+    .cutout-model img { width: 100%; object-fit: contain; filter: saturate(1.02) contrast(1.05); }
+    .cutout-top, .cutout-bottom {
+      position: absolute; left: 50%; transform: translateX(-50%); font-family: var(--title);
+      letter-spacing: -.04em; text-transform: uppercase; color: var(--white); z-index: 7;
+    }
+    .cutout-top { top: 5vh; font-size: 5.2vw; }
+    .cutout-bottom { bottom: 6vh; font-size: 8vw; }
+    .cutout-scribble { top: 7vh; left: 51%; transform: translateX(-50%) rotate(-5deg); font-size: 4rem; z-index: 8; }
+
+    .footer { background: var(--black); padding: 10vh 4vw 4vh; border-top: 1px solid rgba(255,255,255,.08); }
+    .footer-marquee {
+      font-family: var(--title); font-size: 12vw; line-height: .82; letter-spacing: -.04em;
+      color: var(--red); text-transform: uppercase;
+    }
+    .footer-row {
+      margin-top: 4vh; display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem;
+      border-top: 3px solid rgba(255,255,255,.12); padding-top: 2.5vh;
+    }
+    .footer-nav { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+    .footer-nav a {
+      font-family: var(--condensed); font-size: .9rem; font-weight: 700; letter-spacing: .18em;
+      text-transform: uppercase; color: rgba(255,255,255,.82);
+    }
+    .footer-nav a:hover { color: var(--red); }
+    .footer-meta { color: rgba(255,255,255,.7); }
+
+    @media (max-width: 1100px) {
+      .hero-portrait-wrap { width: 52vw; right: 2vw; }
+      .hero-title { font-size: 31vw; }
+      .hero-cta { left: 28vw; }
+      .manifesto-title { max-width: 60vw; font-size: 16vw; }
+      .manifesto-building { width: 50vw; }
+      .manifesto-building-outline { width: 50vw; }
+      .poster-word { font-size: 29vw; }
+      .cutout-word { font-size: 28vw; }
+      .cutout-model { left: 9vw; width: 72vw; }
+    }
+    @media (max-width: 780px) {
+      .site-lines { opacity: .4; }
+      .hero { min-height: 100svh; }
+      .hero-ghost { font-size: 54vw; left: -8vw; top: 10vh; }
+      .hero-title { left: 3vw; bottom: 20vh; font-size: 34vw; }
+      .hero-title .split { transform: translateX(0); }
+      .hero-portrait-wrap { width: 78vw; height: 62vh; top: 15vh; right: 6vw; }
+      .hero-copy { display: none; }
+      .hero-cta { left: 6vw; bottom: 8vh; }
+      .hero-red-block { width: 42vw; bottom: 18vh; }
+      .hero .scribble-a { font-size: 4rem; left: 12vw; top: 10vh; }
+      .hero .scribble-b { display: none; }
+      .hero-ring { right: 12vw; top: 20vh; width: 8rem; height: 3rem; }
+
+      .manifesto { padding-top: 12vh; }
+      .manifesto-grid { min-height: 120vh; }
+      .manifesto-bg-word { font-size: 34vw; top: 5vh; }
+      .manifesto-title { left: 2vw; top: 10vh; font-size: 22vw; max-width: 92vw; }
+      .manifesto-title .outline { transform: translateX(0); }
+      .manifesto-building, .manifesto-building-outline { top: 34vh; right: 0; width: 86vw; height: 46vh; }
+      .manifesto-paper-block { left: 5vw; top: 63vh; width: 24vw; height: 22vh; }
+      .manifesto-copy-left, .manifesto-copy-right {
+        position: relative; width: 82vw; left: auto; right: auto; bottom: auto; margin-left: 4vw; margin-top: 84vh;
+      }
+      .manifesto-copy-right { margin-top: 1.5rem; }
+      .manifesto-cut { right: 12vw; top: 53vh; width: 14vw; height: 12vh; }
+      .manifesto-diagonal { left: 40vw; top: 72vh; width: 50vw; }
+
+      .poster-grunge { min-height: 95vh; }
+      .poster-grid { min-height: 95vh; }
+      .poster-word { font-size: 34vw; top: 6vh; }
+      .poster-model { width: 82vw; margin-top: 20vh; }
+      .poster-logo { right: 8vw; bottom: 24vh; font-size: 16vw; }
+      .poster-left-copy, .poster-right-copy { width: 32vw; font-size: .8rem; bottom: 5vh; }
+
+      .city-grid { min-height: 108vh; }
+      .city-title { left: 38vw; top: 8vh; font-size: 18vw; }
+      .city-left-vertical { font-size: 16vw; top: 36vh; }
+      .city-copy { top: 27vh; left: 0; width: 15rem; font-size: .92rem; }
+      .city-building, .city-building-outline { width: 88vw; height: 55vh; }
+      .city-highlight { right: 17vw; width: 9vw; height: 15vh; }
+      .city-paper { left: 22vw; bottom: 9vh; width: 26vw; height: 24vh; }
+
+      .cutout-grid { min-height: 100vh; }
+      .cutout-word { font-size: 34vw; top: 18vh; }
+      .cutout-model { left: 2vw; top: 24vh; width: 94vw; }
+      .cutout-top { font-size: 9vw; top: 8vh; }
+      .cutout-bottom { font-size: 14vw; bottom: 7vh; }
+      .cutout-scribble { font-size: 2.4rem; top: 10vh; }
+
+      .footer-row { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="site-lines"></div>
+
+  <main>
+    <section class="section hero" id="top">
+      <div class="hero-stage">
+        <div class="hero-ghost">NØRTH</div>
+
+        <div class="hero-portrait-wrap">
+          <div class="hero-blur-bg"></div>
+          <div class="hero-portrait">
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80" alt="Editorial fashion portrait">
+          </div>
+        </div>
+
+        <div class="hero-meta-left eyebrow">
+          FW 26 / SYSTEM LIVE<br>
+          <span style="color: var(--red);">[ ARCHIVE VOL. 01 ]</span>
+        </div>
+
+        <div class="hero-meta-right eyebrow">
+          ONLY ONE<br>
+          <span style="color: var(--red);">BRUTAL APPROACH</span>
+        </div>
+
+        <div class="hero-copy micro">
+          BLACK AND WHITE CINEMATIC PORTRAIT. SHARP SUBJECT. BROKEN SPACING. TYPOGRAPHY AS STRUCTURE. THIS IS NOT CLEAN FASHION. THIS IS COMPOSED IMPACT.
+        </div>
+
+        <div class="hero-red-block"></div>
+        <div class="hero-ring"></div>
+        <div class="cross cross-a"></div>
+        <div class="cross cross-b"></div>
+        <div class="scribble scribble-a">raw /</div>
+        <div class="scribble scribble-b">only one</div>
+        <div class="hero-vertical-label eyebrow">NØRTH / SYSTEM FORM 01</div>
+
+        <h1 class="hero-title">
+          <span>NØRTH</span>
+          <span class="split">VOID</span>
+        </h1>
+
+        <a href="#manifesto" class="hero-cta">Open Archive</a>
+      </div>
+    </section>
+
+    <section class="section manifesto" id="manifesto">
+      <div class="manifesto-grid">
+        <div class="manifesto-bg-word">POST<br>PUNK</div>
+
+        <h2 class="manifesto-title">
+          BRUTAL<br>
+          <span class="outline">SYSTEM</span>
+        </h2>
+
+        <div class="manifesto-building">
+          <img src="https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1400&q=80" alt="Brutalist architecture building">
+        </div>
+        <div class="manifesto-building-outline"></div>
+        <div class="manifesto-paper-block"></div>
+        <div class="manifesto-cut"></div>
+        <div class="manifesto-diagonal"></div>
+        <div class="cross-dark" style="left:49vw; top:14vh; z-index:8;"></div>
+
+        <div class="manifesto-copy-left">
+          THIS SYSTEM IS NOT TRYING TO PLEASE. THERE IS NO FAMILIAR HARMONY. NO SWEET MELODIES. <strong>ONLY RAW EMOTIONS</strong>, NOT POLISHED TO A SHINE.
+        </div>
+
+        <div class="manifesto-copy-right">
+          IT'S NOT JUST A STYLE, <strong>IT'S A CULT.</strong> THIS IS THE AESTHETIC OF GRAY WALLS, LONG RAINCOATS, AND STARING AT NOTHING. MUSIC THAT SOUNDS INSIDE THE HEART.
+        </div>
+      </div>
+    </section>
+
+    <section class="section poster-grunge" id="grunge">
+      <div class="poster-grid">
+        <div class="poster-word">GRUNGE</div>
+        <div class="poster-model">
+          <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1000&q=80" alt="Fashion subject in motion">
+        </div>
+        <div class="poster-left-copy">
+          AT THE HEART OF GRUNGE DESIGN IS AN EMPHASIS ON RAW EDGES, DISTRESSED TEXTURES, AND UNCONVENTIONAL TYPOGRAPHY.
+        </div>
+        <div class="poster-right-copy">
+          A REBELLIOUS RESPONSE TO POLISHED AESTHETICS, CHARACTERIZED BY RAW, GRITTY, AND UNFILTERED VISUAL LANGUAGE.
+        </div>
+        <div class="poster-logo">NØ</div>
+        <div class="poster-scratch"></div>
+      </div>
+    </section>
+
+    <section class="section city" id="city">
+      <div class="city-grid">
+        <div class="city-swatches">
+          <span></span><span></span><span></span>
+        </div>
+
+        <h2 class="city-title">HONG<br>KONG</h2>
+        <div class="city-left-vertical">CITY</div>
+
+        <div class="city-copy">
+          HONG KONG WAS ORIGINALLY A SPARSELY POPULATED FARMING AND FISHING VILLAGE, BUT HAS NOW DEVELOPED INTO ONE OF THE WORLD'S MOST IMPORTANT FINANCIAL CENTERS.
+        </div>
+
+        <div class="city-paper"></div>
+        <div class="city-building">
+          <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1400&q=80" alt="Urban architecture tower">
+        </div>
+        <div class="city-building-outline"></div>
+        <div class="city-highlight"></div>
+      </div>
+    </section>
+
+    <section class="section cutout" id="cutout">
+      <div class="cutout-grid">
+        <div class="cutout-top">HELLO</div>
+        <div class="scribble cutout-scribble">design</div>
+        <div class="cutout-word">NOON</div>
+        <div class="cutout-model">
+          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80" alt="Fashion editorial cutout">
+        </div>
+        <div class="cutout-bottom">GANG</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-marquee">NØRTH / BRUTAL EDITORIAL / NØRTH / BRUTAL EDITORIAL</div>
+    <div class="footer-row">
+      <nav class="footer-nav">
+        <a href="#top">Hero</a>
+        <a href="#manifesto">Manifesto</a>
+        <a href="#grunge">Grunge</a>
+        <a href="#city">City</a>
+        <a href="#cutout">Cutout</a>
+      </nav>
+      <div class="footer-meta micro">
+        SATURDAY / MARCH 2026<br>
+        ROME / SYSTEM ONLINE
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const heroGhost = document.querySelector('.hero-ghost');
+    const heroPortrait = document.querySelector('.hero-portrait-wrap');
+    const cityTitle = document.querySelector('.city-title');
+
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (heroGhost) heroGhost.style.transform = `translateY(${y * 0.18}px)`;
+      if (heroPortrait) heroPortrait.style.transform = `translateY(${y * -0.06}px)`;
+      if (cityTitle) cityTitle.style.transform = `translateY(${y * 0.04}px)`;
+    });
+  </script>
+</body>
+</html>
