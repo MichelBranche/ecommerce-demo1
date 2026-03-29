@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ReactLenis } from 'lenis/react';
 
@@ -12,6 +12,20 @@ import ProductDetail from './pages/ProductDetail';
 import Checkout from './pages/Checkout';
 
 function App() {
+
+  // Marquee Titolo Browser (Brutalist Tab Script)
+  useEffect(() => {
+    const titleText = "[ SYS_OFF ] // STREETWEAR SCUM // ";
+    let i = 0;
+    
+    const scrollTitle = setInterval(() => {
+      document.title = titleText.substring(i) + titleText.substring(0, i);
+      i = (i + 1) % titleText.length;
+    }, 350);
+
+    // Cleanup alla distruzione (sebbene App sia la radice)
+    return () => clearInterval(scrollTitle);
+  }, []);
   return (
     <ReactLenis root>
       <div className="app-wrapper">
