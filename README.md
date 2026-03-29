@@ -1,6 +1,6 @@
 # 🪓 Brutalist Streetwear Archive (E-Commerce)
 
-![Preview progetto](./public/preview/mockup.png)
+![Preview progetto](./public/assets/mockup.png)
 
 ![React](https://img.shields.io/badge/React-18.x-61dafb?logo=react&logoColor=black) 
 ![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?logo=vite&logoColor=white) 
